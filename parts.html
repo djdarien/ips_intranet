@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parts Inventory - IPS</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Parts Inventory</h1>
+    <a href="index.html">🏠 Home</a>
+  </header>
+  <main>
+    <input type="text" id="partName" placeholder="Part Name">
+    <input type="number" id="partQty" placeholder="Quantity">
+    <button onclick="addPart()">Add Part</button>
+    <ul id="partsList"></ul>
+    <button onclick="exportPartsCSV()">Export CSV</button>
+  </main>
+  <script>
+    function addPart() {
+      const name = document.getElementById('partName').value;
+      const qty = document.getElementById('partQty').value;
+      let parts = JSON.parse(localStorage.getItem('parts')) || [];
+      parts.push({ name, qty });
+      localStorage.setItem('parts', JSON.stringify(parts));
+      renderParts();
+    }
+
+    function renderParts() {
+      const partsList = document.getElementById('partsList');
+      const parts = JSON.parse(localStorage.getItem('parts')) || [];
+      partsList.innerHTML = '';
+      parts.forEach(part => {
+        const li = document.createElement('li');
+        li.textContent = `${part.name}: ${part.qty}`;
+        partsList.appendChild(li);
+      });
+    }
+
+    function exportPartsCSV() {
+      const parts = JSON.parse(localStorage.getItem('parts')) || [];
+      const csv = parts.map(p => `${p.name},${p.qty}`).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'parts_inventory.csv';
+      link.click();
+    }
+
+    window.addEventListener('load', renderParts);
+  </script>
+</body>
+</html>

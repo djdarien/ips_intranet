@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time Clock - IPS</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Time Clock</h1>
+    <a href="index.html">🏠 Home</a>
+  </header>
+  <main>
+    <input type="text" id="employeeName" placeholder="Employee Name">
+    <button onclick="clockIn()">Clock In</button>
+    <button onclick="clockOut()">Clock Out</button>
+    <ul id="timeLog"></ul>
+    <button onclick="exportTimeCSV()">Export CSV</button>
+  </main>
+  <script>
+    function clockIn() {
+      logTime('IN');
+    }
+    function clockOut() {
+      logTime('OUT');
+    }
+    function logTime(type) {
+      const name = document.getElementById('employeeName').value;
+      const time = new Date().toLocaleString();
+      let logs = JSON.parse(localStorage.getItem('timelogs')) || [];
+      logs.push({ name, type, time });
+      localStorage.setItem('timelogs', JSON.stringify(logs));
+      renderLogs();
+    }
+    function renderLogs() {
+      const logs = JSON.parse(localStorage.getItem('timelogs')) || [];
+      const list = document.getElementById('timeLog');
+      list.innerHTML = '';
+      logs.forEach(log => {
+        const li = document.createElement('li');
+        li.textContent = `${log.time} - ${log.name} ${log.type}`;
+        list.appendChild(li);
+      });
+    }
+    function exportTimeCSV() {
+      const logs = JSON.parse(localStorage.getItem('timelogs')) || [];
+      const csv = logs.map(log => `${log.name},${log.type},${log.time}`).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'timeclock_logs.csv';
+      link.click();
+    }
+    window.addEventListener('load', renderLogs);
+  </script>
+</body>
+</html>

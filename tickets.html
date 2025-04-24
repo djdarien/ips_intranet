@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ticket Tracker - IPS</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Ticket Tracker</h1>
+    <a href="index.html">🏠 Home</a>
+  </header>
+  <main>
+    <form id="ticketForm">
+      <input type="text" id="customerName" placeholder="Customer Name" required>
+      <input type="text" id="siteAddress" placeholder="Site Address" required>
+      <textarea id="ticketComments" placeholder="Enter comments" required></textarea>
+      <input type="file" id="siteFiles">
+      <button type="submit">Save Ticket</button>
+    </form>
+    <section id="ticketArchive">
+      <h2>Ticket Archive</h2>
+      <input type="text" id="searchTickets" placeholder="Search tickets...">
+      <ul id="ticketList"></ul>
+    </section>
+  </main>
+  <script>
+    const form = document.getElementById('ticketForm');
+    const ticketList = document.getElementById('ticketList');
+    const searchTickets = document.getElementById('searchTickets');
+
+    function saveTicket(e) {
+      e.preventDefault();
+      const ticket = {
+        customer: document.getElementById('customerName').value,
+        address: document.getElementById('siteAddress').value,
+        comments: document.getElementById('ticketComments').value,
+        timestamp: new Date().toLocaleString()
+      };
+      let tickets = JSON.parse(localStorage.getItem('tickets')) || [];
+      tickets.push(ticket);
+      localStorage.setItem('tickets', JSON.stringify(tickets));
+      renderTickets();
+      form.reset();
+    }
+
+    function renderTickets() {
+      const tickets = JSON.parse(localStorage.getItem('tickets')) || [];
+      const filter = searchTickets.value.toLowerCase();
+      ticketList.innerHTML = '';
+      tickets
+        .filter(t => t.customer.toLowerCase().includes(filter) || t.comments.toLowerCase().includes(filter))
+        .forEach(ticket => {
+          const li = document.createElement('li');
+          li.textContent = `${ticket.timestamp}: ${ticket.customer} - ${ticket.comments}`;
+          ticketList.appendChild(li);
+        });
+    }
+
+    form.addEventListener('submit', saveTicket);
+    searchTickets.addEventListener('input', renderTickets);
+    window.addEventListener('load', renderTickets);
+  </script>
+</body>
+</html>

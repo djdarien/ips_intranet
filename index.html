@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Independent Phone Services Inc. - Intranet</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Independent Phone Services Inc.</h1>
+    <div id="datetime-weather"></div>
+  </header>
+  <nav>
+    <a href="tickets.html">Ticket Tracker</a>
+    <a href="parts.html">Parts Inventory</a>
+    <a href="timeclock.html">Time Clock</a>
+  </nav>
+  <main>
+    <p>Welcome to the IPS Intranet. Use the menu above to navigate.</p>
+  </main>
+  <script>
+    const updateWeatherTime = () => {
+      const now = new Date();
+      document.getElementById('datetime-weather').innerText = `Local Time (Nokomis, FL): ${now.toLocaleString()}`;
+    };
+    setInterval(updateWeatherTime, 1000);
+    updateWeatherTime();
+  </script>
+</body>
+</html>
